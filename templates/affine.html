@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Affine Cipher</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icon -->
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins', sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+      radial-gradient(circle at top left, #00ffcc22, transparent 25%),
+      radial-gradient(circle at bottom right, #0099ff22, transparent 25%),
+      #050816;
+
+      color:white;
+      overflow-x:hidden;
+      transition:0.4s;
+    }
+
+    /* LIGHT MODE */
+    body.light-mode{
+      background:#f5f7fb;
+      color:#111827;
+    }
+
+    body.light-mode .cipher-box,
+    body.light-mode .result-box,
+    body.light-mode .step-box{
+      background:white;
+      color:#111827;
+      border:1px solid #dbe4f0;
+    }
+
+    body.light-mode textarea,
+    body.light-mode input{
+      background:#f3f4f6;
+      color:#111827;
+      border:1px solid #d1d5db;
+    }
+
+    body.light-mode .navbar{
+      background:white !important;
+    }
+
+    /* NAVBAR */
+    .navbar{
+      background:rgba(255,255,255,0.05);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      padding:15px 0;
+    }
+
+    .logo{
+      text-decoration:none;
+      color:#00ffe1;
+      font-size:1.7rem;
+      font-weight:700;
+    }
+
+    .theme-btn{
+      border:none;
+      background:#00ffe1;
+      color:#03121d;
+      padding:10px 18px;
+      border-radius:12px;
+      font-weight:600;
+      transition:0.3s;
+    }
+
+    /* MAIN */
+    .main-section{
+      padding:60px 20px;
+    }
+
+    .cipher-box{
+      max-width:950px;
+      margin:auto;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(12px);
+      border-radius:28px;
+      padding:40px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .cipher-title{
+      text-align:center;
+      margin-bottom:35px;
+    }
+
+    .cipher-title h1{
+      color:#00ffe1;
+      font-size:3rem;
+      margin-bottom:10px;
+    }
+
+    .cipher-title p{
+      color:#cbd5e1;
+    }
+
+    /* INPUT */
+    textarea,
+    input{
+      width:100%;
+      background:rgba(255,255,255,0.08);
+      border:none;
+      outline:none;
+      padding:15px;
+      border-radius:14px;
+      color:white;
+      margin-bottom:20px;
+      transition:0.3s;
+    }
+
+    textarea{
+      min-height:160px;
+      resize:none;
+    }
+
+    textarea:focus,
+    input:focus{
+      border:1px solid #00ffe1;
+      box-shadow:0 0 10px rgba(0,255,225,0.2);
+    }
+
+    /* BUTTON */
+    .btn-custom{
+      border:none;
+      padding:14px;
+      border-radius:14px;
+      font-weight:600;
+      transition:0.3s;
+    }
+
+    .encrypt-btn{
+      background:#00ffe1;
+      color:#03121d;
+    }
+
+    .decrypt-btn{
+      background:#0ea5e9;
+      color:white;
+    }
+
+    .btn-custom:hover{
+      transform:translateY(-3px);
+    }
+
+    /* RESULT */
+    .result-box,
+    .step-box{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:20px;
+      padding:25px;
+      margin-top:30px;
+    }
+
+    .result-box h3,
+    .step-box h3{
+      margin-bottom:15px;
+      color:#00ffe1;
+    }
+
+    .formula-box{
+      margin-top:20px;
+      padding:15px;
+      border-radius:12px;
+      background:rgba(0,255,225,0.08);
+      color:#00ffe1;
+      font-weight:600;
+    }
+
+    .step-item{
+      padding:12px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      font-size:0.95rem;
+    }
+
+    .step-item:last-child{
+      border-bottom:none;
+    }
+
+    .back-btn{
+      display:inline-block;
+      margin-top:30px;
+      text-decoration:none;
+      color:#00ffe1;
+      transition:0.3s;
+    }
+
+    .back-btn:hover{
+      letter-spacing:1px;
+    }
+
+    @media(max-width:768px){
+
+      .cipher-box{
+        padding:25px;
+      }
+
+      .cipher-title h1{
+        font-size:2.3rem;
+      }
+
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+
+      <a href="/" class="logo">
+        CRYPTO CIPHER
+      </a>
+
+      <button class="theme-btn"
+      onclick="toggleTheme()">
+
+        <i class="fa-solid fa-moon"></i>
+        Theme
+
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <section class="main-section">
+
+    <div class="cipher-box">
+
+      <!-- TITLE -->
+      <div class="cipher-title">
+
+        <h1>Affine Cipher</h1>
+
+        <p>
+          Enkripsi dan dekripsi menggunakan
+          operasi matematika affine dengan
+          parameter a dan b.
+        </p>
+
+      </div>
+
+      <!-- INPUT -->
+      <textarea
+      id="text"
+      placeholder="Masukkan teks..."></textarea>
+
+      <div class="row">
+
+        <div class="col-md-6">
+
+          <input
+          type="number"
+          id="a"
+          placeholder="Masukkan nilai a">
+
+        </div>
+
+        <div class="col-md-6">
+
+          <input
+          type="number"
+          id="b"
+          placeholder="Masukkan nilai b">
+
+        </div>
+
+      </div>
+
+      <!-- BUTTON -->
+      <div class="row g-3">
+
+        <div class="col-md-6">
+
+          <button
+          class="btn-custom encrypt-btn w-100"
+          onclick="processCipher('encrypt')">
+
+            <i class="fa-solid fa-lock"></i>
+            Encrypt
+
+          </button>
+
+        </div>
+
+        <div class="col-md-6">
+
+          <button
+          class="btn-custom decrypt-btn w-100"
+          onclick="processCipher('decrypt')">
+
+            <i class="fa-solid fa-unlock"></i>
+            Decrypt
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- RESULT -->
+      <div class="result-box">
+
+        <h3>
+          <i class="fa-solid fa-key"></i>
+          Hasil
+        </h3>
+
+        <p id="result">
+          Hasil enkripsi/dekripsi akan tampil di sini...
+        </p>
+
+        <!-- FORMULA -->
+        <div class="formula-box">
+
+  <b>Rumus Affine Cipher:</b>
+
+  <br><br>
+
+  <b>Encryption:</b>
+  <br>
+  E(x) = (a × x + b) mod 26
+
+  <br><br>
+
+  <b>Decryption:</b>
+  <br>
+  D(x) = a⁻¹ × (x - b) mod 26
+
+</div>
+
+      </div>
+
+      <!-- STEP -->
+      <div class="step-box">
+
+        <h3>
+          <i class="fa-solid fa-list"></i>
+          Langkah Perhitungan
+        </h3>
+
+        <div id="steps">
+
+          <div class="step-item">
+            Langkah proses affine cipher akan tampil di sini...
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- BACK -->
+      <a href="/" class="back-btn">
+
+        <i class="fa-solid fa-arrow-left"></i>
+        Kembali ke Menu Utama
+
+      </a>
+
+    </div>
+
+  </section>
+
+  <script>
+
+    // DARK LIGHT MODE
+    function toggleTheme(){
+
+      document.body.classList.toggle("light-mode");
+
+    }
+
+
+    // PROCESS AFFINE
+    async function processCipher(mode){
+
+      const text = document.getElementById("text").value;
+      const a = document.getElementById("a").value;
+      const b = document.getElementById("b").value;
+
+      if(text === "" || a === "" || b === ""){
+
+        alert("Lengkapi semua input terlebih dahulu!");
+        return;
+
+      }
+
+      document.getElementById("result").innerHTML =
+      "Processing...";
+
+      document.getElementById("steps").innerHTML =
+      "<div class='step-item'>Sedang menghitung...</div>";
+
+      const response = await fetch("/affine/process",{
+
+        method:"POST",
+
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+          text:text,
+          a:a,
+          b:b,
+          mode:mode
+        })
+
+      });
+
+      const data = await response.json();
+
+      // RESULT
+      document.getElementById("result").innerHTML =
+      data.result;
+
+      // STEPS
+      let html = "";
+
+      data.steps.forEach(step => {
+
+        html += `
+        <div class="step-item">
+          ${step}
+        </div>
+        `;
+
+      });
+
+      document.getElementById("steps").innerHTML =
+      html;
+
+    }
+
+  </script>
+
+</body>
+</html>

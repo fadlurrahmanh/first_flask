@@ -1,0 +1,51 @@
+body{
+    background:#050816;
+    color:white;
+    font-family:Poppins;
+}
+
+.main-title{
+    color:#00ffe1;
+    font-size:3rem;
+}
+
+.card-box{
+    display:block;
+    background:#0f172a;
+    padding:30px;
+    border-radius:20px;
+    text-decoration:none;
+    color:white;
+    transition:0.3s;
+    height:100%;
+}
+
+.card-box:hover{
+    transform:translateY(-10px);
+    border:1px solid #00ffe1;
+}
+
+.cipher-container{
+    max-width:800px;
+    margin:auto;
+    background:#0f172a;
+    padding:40px;
+    border-radius:20px;
+}
+
+.result-box{
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+}
+
+textarea{
+    min-height:150px;
+}
+
+.back-btn{
+    display:inline-block;
+    margin-top:20px;
+    color:#00ffe1;
+    text-decoration:none;
+}
